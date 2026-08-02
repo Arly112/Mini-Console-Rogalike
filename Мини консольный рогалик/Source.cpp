@@ -5,6 +5,7 @@
 #include <windows.h>
 #include <random>
 
+bool Has_name(std::vector<std::string>& weapons, std::string name_weapons);
 
 std::random_device rd;
 std::mt19937 gen(rd());
@@ -88,7 +89,7 @@ public:
 		}
 		else if (!Has_name(weapons, inv))
 		{
-			std::cout << "\n Оружие " << inv << " ещё не найдено";
+			std::cout << "\nОружие " << inv << " ещё не найдено";
 		}
 
 	}
