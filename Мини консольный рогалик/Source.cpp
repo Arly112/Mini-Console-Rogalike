@@ -5,17 +5,29 @@
 #include <windows.h>
 #include <random>
 
-
+class Player;
+void Base_Menu(Player& pl);
+void Loots_Menu(Player& pl);
+void Final_uron(int& p, std::string& stat);
+void NOP_Menu();
 std::random_device rd;
 std::mt19937 gen(rd());
 std::uniform_int_distribution<>dist(1,100);
+
+struct Weapon
+{
+	std::string name_weapon,stat;
+	int uron;
+
+};
+
 class Player
 {
 private:
-	int hpp, uronn, bas_ur,exp;
+	int hpp, uronn, bas_ur, exp;
 	std::string vubb;
 public:
-	std::vector<std::string>weapons;
+	std::vector<Weapon>weapons;
 	Player(int hp, int uron, std::string vub)
 	{
 		hpp = hp;
@@ -60,89 +72,44 @@ public:
 	void Stat_oru()
 	{
 		std::string inv;
-		std::cout << "Введите название оружия чей урон хотите узнать?"<<std::endl;
-		std::getline(std::cin, inv);
-		if (inv == "Кулаки" && Has_name(weapons, inv))
+		int ind;
+		std::cout << "Введите номер оружия чей урон хотите узнать?"<<std::endl;
+		std::cin>>ind;
+
+		if (ind<0 || ind>weapons.size())
 		{
-			std::cout << "Урон: " << bas_ur;
+			std::cout << "\nОружия под данным номером нет" << std::endl;
+			return;
 		}
-		else if (inv == "Кинжал" && Has_name(weapons, inv))
-		{
-			std::cout << "Урон: 5";
-		}
-		else if (inv == "Меч" && Has_name(weapons, inv))
-		{
-			std::cout << "Урон: 10";
-		}
-		else if (inv == "Топор " && Has_name(weapons, inv))
-		{
-			std::cout << "Урон: 16";
-		}
-		else if (inv == "Лук" && Has_name(weapons, inv))
-		{
-			std::cout << "Урон: 12";
-		}
-		else if (inv == "Жезл мага" && Has_name(weapons, inv))
-		{
-			std::cout << "Урон: 21";
-		}
-		else if (!Has_name(weapons, inv))
-		{
-			std::cout << "\n Оружие " << inv << " ещё не найдено";
-		}
+
+		std::cout << "Урон оружия " << weapons[ind].stat << ' ' << weapons[ind].name_weapon << " равен " << weapons[ind].uron<<std::endl;
 
 	}
 
 	void VAB_oru()
 	{
+		
 		std::setlocale(LC_ALL, "ru");
 		std::string inv;
-		std::cout << "Введите название оружия какое хотите взять?" << std::endl;
-		std::getline(std::cin, inv);
-		if (inv == "Кулаки"&&Has_name(weapons,inv))
-		{
-			std::cout << "\nВы взяли оружие " <<inv;
-			uronn = bas_ur;
-			vubb = inv;
-		}
-		else if (inv == "Кинжал" && Has_name(weapons, inv))
-		{
-			std::cout << "\nВы взяли оружие " << inv;
-			uronn = bas_ur + 5;
-			vubb = inv;
-		}
-		else if (inv == "Меч" && Has_name(weapons, inv))
-		{
-			std::cout << "\nВы взяли оружие " << inv;
-			uronn = bas_ur + 10;
-			vubb = inv;
-		}
-		else if (inv == "Топор" && Has_name(weapons, inv))
-		{
-			std::cout << "\nВы взяли оружие " << inv;
-			uronn = bas_ur + 16;
-			vubb = inv;
-		}
-		else if (inv == "Лук" && Has_name(weapons, inv))
-		{
-			std::cout << "\nВы взяли оружие " << inv;
-			uronn = bas_ur + 12;
-			vubb = inv;
-		}
-		else if (inv == "Жезл мага" && Has_name(weapons, inv))
-		{
-			std::cout << "\nВы взяли оружие " << inv;
-			uronn = bas_ur + 21;
-			vubb = inv;
-		}
-		else if (inv == "Пасхалка")
+		int ind;
+		std::cout << "Введите номер оружия которое хотите взять?" << std::endl;
+		std::cin >> ind;
+
+		if (ind == -1)
 		{
 			system("start https://www.youtube.com/watch?v=c-eBWR_Mzbo");
+			return;
 		}
-		else if(!Has_name(weapons,inv))
+
+		if (ind<-1 || ind>= weapons.size())
 		{
-			std::cout << "\n Оружие "<<inv<<" ещё не найдено";
+			std::cout << "\nОружия под таким номером нет";
+			return;
 		}
+		std::cout << "Вы взяли " << weapons[ind].name_weapon;
+		
+		uronn = (bas_ur + weapons[ind].uron);
+		vubb = weapons[ind].stat + ' ' + weapons[ind].name_weapon;
 	}
 
 	void SEE_Inv()
@@ -152,10 +119,10 @@ public:
 		{
 			if (i == (weapons.size() - 1))
 			{
-				std::cout << weapons[i];
+				std::cout<<i<<'.' << weapons[i].stat << ' ' << weapons[i].name_weapon;
 			}
 			else
-				std::cout << weapons[i] << ',';
+				std::cout << i << '.' << weapons[i].stat << ' ' << weapons[i].name_weapon << ',';
 		}
 		do
 		{
@@ -200,7 +167,6 @@ public:
 
 void Evil_Menu(Player& pl);
 void Mobs_menu(Player& pl);
-void Base_Menu(Player& pl);
 void At(Player& pl, std::string& mobl, int& Hp_mobs, int& Damage_mobs, bool& escp);
 void NoAt(Player& pl, std::string& mobl, int& Hp_mobs, int& Damage_mobs, bool& escp);
 void Run(Player& pl, std::string& mobl, int& Hp_mobs, int& Damage_mobs, bool& escp);
@@ -208,11 +174,6 @@ void NoRun(Player& pl, std::string& mobl, int& Hp_mobs, int& Damage_mobs, bool& 
 void Prow_VubRun(Player& pl, std::string& mobl, int& Hp_mobs, int& Damage_mobs, bool& escp);
 void Vabor(Player& pl, std::string& mobl, int& Hp_mobs, int& Damage_mobs, bool& escp);
 
-bool Has_name(std::vector<std::string>& weapons, std::string name_weapons)
-{
-	auto prow = std::find(weapons.begin(), weapons.end(), name_weapons);
-	return prow != weapons.end();
-}
 
 void Events(Player& pl)
 {
@@ -224,7 +185,7 @@ void Events(Player& pl)
 	}
 	else if (event > 30 && event < 45)
 	{
-		//Loots_Menu();
+		Loots_Menu(pl);
 	}
 	else if (event > 45 && event < 75)
 	{
@@ -232,11 +193,48 @@ void Events(Player& pl)
 	}
 	else if (event > 75 && event <= 100)
 	{
-		//NOP_Menu();
+		NOP_Menu();
 	}
 }
 
+void Final_uron(int& p, std::string& stat)
+{
+	int Change = dist(gen);
+	double mnosh;
+	mnosh = 1.0;
+	std::string name_oru;
+	if (Change <= 50)
+	{
+		stat = "Обычное";
+		mnosh = 1;
+	}
 
+	else if (Change > 50&&Change<=75)
+	{
+		stat = "Необычное";
+		mnosh = 1.2;
+	}
+
+	else if (Change > 75 &&Change<=90)
+	{
+		stat = "Редкое";
+		mnosh = 1.5;
+	}
+
+	else if (Change > 90 &&Change<=98)
+	{
+		stat = "Эпическое";
+		mnosh = 1.8;
+	}
+
+	else if (Change > 98 &&Change<=100)
+	{
+		stat = "Легендарное";
+		mnosh = 2.5;
+	}
+
+	p *= mnosh;
+}
 
 void Mobs_menu(Player& pl)
 {
@@ -284,6 +282,7 @@ void Mobs_menu(Player& pl)
 	{
 		mobl = "Пасхалку";
 		system("start https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+		return;
 	}
 	else if (mob == 99)
 	{
@@ -524,9 +523,43 @@ void Base_Menu(Player& pl)
 	} while (vab != 0);
 }
 
-void Loots_Menu()
+void Loots_Menu(Player& pl)
 {
+	int loot = dist(gen);
+	Weapon oru;
+	if (loot <=35)
+	{
+		oru.name_weapon="Кинжал";
+		oru.uron = 5;
+	}
 
+	else if (loot >35 && loot<=60)
+	{
+		oru.name_weapon = "Меч";
+		oru.uron = 10;
+	}
+
+	else if (loot >60 && loot<=80)
+	{
+		oru.name_weapon = "Лук";
+		oru.uron = 12;
+	}
+
+	else if (loot >80 && loot<=90)
+	{
+		oru.name_weapon = "Топор";
+		oru.uron = 16;
+	}
+
+	else if (loot >90 && loot<=100)
+	{
+		oru.name_weapon = "Жезл мага";
+		oru.uron = 21;
+	}
+
+	Final_uron(oru.uron,oru.stat);
+	std::cout << "Вам выпало " << oru.stat << " оружие " << oru.name_weapon <<" с уроном равным "<<oru.uron;
+	pl.weapons.push_back(oru);
 }
 
 void NOP_Menu()
@@ -540,13 +573,42 @@ void NOP_Menu()
 		std::cout <<"Вы её пнули за то что напугала и пошли дальше.";
 	}
 
-	else if (no>30&& no<50)
+	else if (no >30&& no <= 50)
 	{
 
 		std::cout <<"Вы вышли на лесную дорожку." << std::endl;
 		std::cout <<"Идя по ней вы так засмотрелись на красоты что головой попали в паутину.А вы с детства боитесь пауков(Чтобы побороть подобные страхи вы и стали ходить в подобные походы)!!" << std::endl;
 		std::cout <<"Вы в скором времени убрали с лица и головы всю паутину и переведя дух от этого пошли дальше";
 	}
+
+	else if (no > 50 && no <= 65)
+	{
+		std::cout << "Вы прошли мимо старого дуба." << std::endl;
+		std::cout << "На ветке сидела сова и пристально смотрела на вас, но ничего не сказала." << std::endl;
+		std::cout << "Вы решили, что мудрый взгляд — это не повод для разговора, и пошли дальше.";
+	}
+
+	else if (no > 65 && no <= 80)
+	{
+		std::cout << "Вы нашли небольшой ручей." << std::endl;
+		std::cout << "Вода была прохладной и чистой. Вы напились, помыли лицо и даже немного отдохнули." << std::endl;
+		std::cout << "Никакой пользы для дела, но приятно.";
+	}
+
+	else if (no > 80 && no <= 95)
+	{
+		std::cout << "В траве что-то шевельнулось." << std::endl;
+		std::cout << "Вы напряглись, схватились за оружие... но это оказался просто ежик." << std::endl;
+		std::cout << "Ёжик уставился на вас, фыркнул и убежал в кусты. Вы чувствовали себя немного неловко.";
+	}
+
+	else if(no > 95 && no <= 100)
+	{
+		std::cout << "Вы услышали странный шум позади себя." << std::endl;
+		std::cout << "Резко обернувшись, вы увидели... свой собственный след." << std::endl;
+		std::cout << "Похоже, вы ходите по кругу уже второй час. Или это вам кажется.";
+	}
+
 }
 
 int main()
@@ -555,7 +617,10 @@ int main()
 	SetConsoleOutputCP(1251);
 	std::setlocale(LC_ALL, "ru");
 	Player pl(20, 3, "Кулаки");
-	pl.weapons.push_back("Кулаки");
+	Weapon Base;
+	Base.name_weapon = "Кулаки";
+	Base.uron = 3;
+	pl.weapons.push_back(Base);
 	Base_Menu(pl);
 
 
