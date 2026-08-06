@@ -6,6 +6,7 @@
 #include <random>
 
 class Player;
+void Upgrade_Menu(Player& pl);
 void Base_Menu(Player& pl);
 void Loots_Menu(Player& pl);
 void Final_uron(int& p, std::string& stat);
@@ -24,17 +25,20 @@ struct Weapon
 class Player
 {
 private:
-	int hpp, uronn, bas_ur, exp;
+	int hpp, uronn, bas_ur,bas_hp, exp,lvl,new_lvl;
 	std::string vubb;
 public:
 	std::vector<Weapon>weapons;
 	Player(int hp, int uron, std::string vub)
 	{
 		hpp = hp;
+		bas_hp = hp;
 		uronn = uron;
-		vubb = vub;
 		bas_ur = uron;
+		vubb = vub;
 		exp = 0;
+		lvl = 1;
+		new_lvl = 200;
 	}
 
 	void dam(int damm)
@@ -49,12 +53,39 @@ public:
 	void Heel(int hel)
 	{
 		hpp += hel;
+		if (hpp >= bas_hp)
+		{
+			hpp = bas_hp;
+		}
+	}
+	void Level_Up(Player& pl)
+	{
+		while (exp>=new_lvl)
+		{
+			exp -= new_lvl;
+			lvl += 1;
+			std::cout << "Вы увеличели свой уровенью он теперь равен = " << lvl << std::endl;
+			Upgrade_Menu(pl);
+			new_lvl =static_cast<int>(new_lvl*1.2);
+		}
+		std::cout << "Для следующего уровня надо набрать " << new_lvl << " exp " << std::endl;
+	}
+	void Base_Hp_Plus()
+	{
+		bas_hp += 15;
+		hpp = bas_hp;
+	}
+
+	void Base_Uron_Plus()
+	{
+		bas_ur += 3;
 	}
 
 	void Stat()
 	{
 		std::cout << "Здоровье:" << hpp << std::endl;
 		std::cout << "Урон:" << uronn << std::endl;
+		std::cout << "Ваш Level: " << lvl << std::endl;
 		std::cout << "Ваше количество exp = " << exp << std::endl;
 		std::cout << "Оружие в руке: " << vubb;
 	}
@@ -106,7 +137,7 @@ public:
 			std::cout << "\nОружия под таким номером нет";
 			return;
 		}
-		std::cout << "Вы взяли " << weapons[ind].name_weapon;
+		std::cout << "Вы взяли " << weapons[ind].stat<< ' ' << weapons[ind].name_weapon;
 		
 		uronn = (bas_ur + weapons[ind].uron);
 		vubb = weapons[ind].stat + ' ' + weapons[ind].name_weapon;
@@ -153,14 +184,30 @@ public:
 		return uronn;
 	}
 
+	int retBaseUr()
+	{
+		return bas_ur;
+	}
+
 	int retHpp()
 	{
 		return hpp;
 	}
 
-	void retexp(int c)
+	void retexp(int c,Player& pl)
 	{
 		exp += c;
+		Level_Up(pl);
+	}
+
+	int retExp()
+	{
+		return exp;
+	}
+
+	int retLVL()
+	{
+		return lvl;
 	}
 
 };
@@ -179,15 +226,15 @@ void Events(Player& pl)
 {
 	int event = dist(gen);
 
-	if (event < 30)
+	if (event <= 30)
 	{
 		Mobs_menu(pl);
 	}
-	else if (event > 30 && event < 45)
+	else if (event > 30 && event <= 45)
 	{
 		Loots_Menu(pl);
 	}
-	else if (event > 45 && event < 75)
+	else if (event > 45 && event <= 75)
 	{
 		Evil_Menu(pl);
 	}
@@ -263,7 +310,7 @@ void Mobs_menu(Player& pl)
 		expm = 20;
 	}
 
-	else if (mob > 45 && mob < 75)
+	else if (mob > 45 && mob <= 75)
 	{
 		mobl = "Слизень";
 		Hp_mobs = 20;
@@ -313,7 +360,7 @@ void Mobs_menu(Player& pl)
 	{
 		std::cout << "Поздравляем вы убили " << mobl << " вы получили " << expm << " единиц опыта" << std::endl;
 
-		pl.retexp(expm);
+		pl.retexp(expm,pl);
 
 	}
 
@@ -610,6 +657,32 @@ void NOP_Menu()
 	}
 
 }
+
+
+void Upgrade_Menu(Player& pl)
+{
+	int vab;
+	std::cout << "\nЧто вы хотите улучшить" << std::endl;
+	std::cout << "1.Ваше максимальное хп" << std::endl;
+	std::cout << "2.Ваш базовый урон" << std::endl;
+	std::cin >> vab;
+	switch (vab)
+	{
+	case 1:pl.Base_Hp_Plus();
+		std::cout << "Ваше здоровье востановилось." << std::endl;
+		std::cout << "Ваше максимальное здоровье теперь равно = "<< pl.retHpp() << std::endl;
+		break;
+
+	case 2: pl.Base_Uron_Plus();
+		std::cout << "Ваш базовый урон теперь = " << pl.retBaseUr() << std::endl;
+		break;
+	default:
+		break;
+	}
+
+}
+
+
 
 int main()
 {
