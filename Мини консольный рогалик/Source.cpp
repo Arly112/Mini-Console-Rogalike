@@ -38,7 +38,7 @@ public:
 		vubb = vub;
 		exp = 0;
 		lvl = 1;
-		new_lvl = 200;
+		new_lvl = 100;
 	}
 
 	void dam(int damm)
@@ -390,7 +390,7 @@ void Prow_VubRun(Player& pl, std::string& mobl, int& Hp_mobs, int& Damage_mobs, 
 		Run(pl, mobl, Hp_mobs, Damage_mobs, escp);
 	}
 
-	if (vubRun > 60 && vubRun <= 100)
+	else if (vubRun > 60 && vubRun <= 100)
 	{
 		NoRun(pl, mobl, Hp_mobs, Damage_mobs, escp);
 	}
@@ -476,7 +476,7 @@ void Evil_Menu(Player& pl)
 		pl.dam(evur);
 	}
 
-	if (evil > 25 && evil <= 45)
+	else if (evil > 25 && evil <= 45)
 	{
 		std::cout << "Вы прошли дальше но наступили в медвежий капкан, вы пытаетесь осободиться" << std::endl;
 		std::cout << "Через некоторое время вам всё же удалось удалось это сделать но из - за кровотечения ";
@@ -485,7 +485,7 @@ void Evil_Menu(Player& pl)
 		pl.dam(evur);
 	}
 
-	if (evil > 45 && evil <= 50)
+	else if (evil > 45 && evil <= 50)
 	{
 		std::cout << "Вы зашли в хорошо осветлённую комнату, там на столе стояла бутылочка с красной жидкостью." << std::endl;
 		std::cout << "У вас разыгралась жажда и вы решили выпить эту жидкость." << std::endl;
@@ -495,7 +495,7 @@ void Evil_Menu(Player& pl)
 		pl.Heel(evur);
 	}
 
-	if (evil > 50 && evil <= 80&&pl.retHpp()>12)
+	else if (evil > 50 && evil <= 80&&pl.retHpp()>12)
 	{
 		std::cout << "Вы наступили на скрытую плиту в полу..." << std::endl;
 		std::cout << "Из стены вылетела стрела и попала вам в плечо и задела важный сосуд но вы успели остановить кровотечение!" << std::endl;
@@ -505,7 +505,7 @@ void Evil_Menu(Player& pl)
 		pl.dam(evur);
 	}
 
-	if (evil > 50 && evil <= 80&&pl.retHpp()<=12)
+	else if (evil > 50 && evil <= 80&&pl.retHpp()<=12)
 	{
 		std::cout << "Вы наступили на скрытую плиту в полу..." << std::endl;
 		std::cout << "Из стены вылетела стрела и попала вам в плечо и задела важный сосуд и вы истекли кровью!!" << std::endl;
@@ -513,7 +513,7 @@ void Evil_Menu(Player& pl)
 		pl.dam(evur);
 	}
 
-	if (evil > 80 && evil < 100)
+	else if (evil > 80 && evil < 100)
 	{
 		std::cout << "Вы задели рычаг на стене и из щелей в полу повалил зелёный дым..." << std::endl;
 		std::cout << "Ядовитый газ обжёг ваши лёгкие!" << std::endl;
@@ -522,7 +522,7 @@ void Evil_Menu(Player& pl)
 		pl.dam(evur);
 	}
 
-	if (evil==100)
+	else if (evil==100)
 	{
 		std::cout << "Вы не заметили яму под ногами и провалились вниз!" << std::endl;
 		std::cout << "Острые колья пронзили вас насквозь!" << std::endl;
@@ -690,7 +690,7 @@ int main()
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
 	std::setlocale(LC_ALL, "ru");
-	Player pl(20, 3, "Кулаки");
+	Player pl(100, 3, "Кулаки");
 	Weapon Base;
 	Base.name_weapon = "Кулаки";
 	Base.uron = 3;
