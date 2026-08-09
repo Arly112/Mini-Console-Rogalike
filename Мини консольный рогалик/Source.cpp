@@ -53,9 +53,10 @@ public:
 	void Heel(int hel)
 	{
 		hpp += hel;
-		if (hpp >= bas_hp)
+		if (hpp > bas_hp)
 		{
 			hpp = bas_hp;
+
 		}
 	}
 	void Level_Up(Player& pl)
@@ -103,11 +104,11 @@ public:
 	void Stat_oru()
 	{
 		std::string inv;
-		int ind;
+		int ind=-2;
 		std::cout << "¬ведите номер оружи€ чей урон хотите узнать?"<<std::endl;
 		std::cin>>ind;
 
-		if (ind<0 || ind>weapons.size())
+		if (ind<0 || ind>=weapons.size())
 		{
 			std::cout << "\nќружи€ под данным номером нет" << std::endl;
 			return;
@@ -122,7 +123,7 @@ public:
 		
 		std::setlocale(LC_ALL, "ru");
 		std::string inv;
-		int ind;
+		int ind=-2;
 		std::cout << "¬ведите номер оружи€ которое хотите вз€ть?" << std::endl;
 		std::cin >> ind;
 
