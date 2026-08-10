@@ -197,17 +197,15 @@ public:
 		save << vubb << '\n';
 
 
-		save << weapons.size();
+		save << weapons.size()<<'\n';
 		for (auto& w : weapons)
 		{
 			save << w.name_weapon << '\n'
 				<< w.stat << '\n'
-				<< w.uron;
+				<< w.uron<<'\n';
 		}
-
+		save.close();
 	}
-
-	
 
 	bool Load_game()
 	{
@@ -223,6 +221,7 @@ public:
 
 		size_t c;
 		load >> c;
+		load.ignore(1000, '\n');
 		for (size_t i = 0; i < c; i++)
 		{
 			Weapon oru;
@@ -233,6 +232,7 @@ public:
 			weapons.push_back(oru);
 		}
 		return true;
+		load.close();
 	}
 
 	int retUr()
@@ -628,6 +628,7 @@ void Base_Menu(Player& pl)
 		case 4:system("cls");
 			break;
 		case 0:std::cout << "\nХорошего вам дня!!";
+			pl.Save_game();
 			break;
 		}
 	} while (vab != 0);
@@ -777,7 +778,7 @@ int main()
 	{
 		Weapon Base;
 		Base.name_weapon = "Кулаки";
-		Base.uron = 3;
+		Base.uron = 0;
 		pl.weapons.push_back(Base);
 	}
 	Base_Menu(pl);
