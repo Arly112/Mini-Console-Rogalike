@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -180,6 +181,60 @@ public:
 		} while (vab != 0);
 	}
 
+	void Save_game()
+	{
+		std::ofstream save;
+		save.open("Save.txt");
+		save << hpp << '\n'
+			 << lvl << '\n'
+			 << bas_hp << '\n'
+			 << uronn << '\n'
+			 << bas_ur << '\n'
+			 << exp << '\n'
+			 << new_lvl << '\n';
+
+
+		save << vubb << '\n';
+
+
+		save << weapons.size();
+		for (auto& w : weapons)
+		{
+			save << w.name_weapon << '\n'
+				<< w.stat << '\n'
+				<< w.uron;
+		}
+
+	}
+
+	
+
+	bool Load_game()
+	{
+		std::ifstream load;
+		load.open("Save.txt");
+		if (!load) return false;
+
+
+		load >> hpp >> lvl >> bas_hp >> uronn >> bas_ur >> exp >> new_lvl;
+		load.ignore(1000, '\n');
+
+		std::getline(load, vubb);
+
+		size_t c;
+		load >> c;
+		for (size_t i = 0; i < c; i++)
+		{
+			Weapon oru;
+			std::getline(load, oru.name_weapon);
+			std::getline(load, oru.stat);
+			load >> oru.uron;
+			load.ignore(1000, '\n');
+			weapons.push_back(oru);
+		}
+		return true;
+	}
+
 	int retUr()
 	{
 		return uronn;
@@ -212,6 +267,12 @@ public:
 	}
 
 };
+
+bool Have_File()
+{
+	std::ifstream hf("Save.txt");
+	return hf.is_open();
+}
 
 void Evil_Menu(Player& pl);
 void Mobs_menu(Player& pl);
@@ -561,6 +622,7 @@ void Base_Menu(Player& pl)
 				std::cout << "Вы проиграли";
 				return;
 			}
+			pl.Save_game();
 			std::cout << "\n";
 			break;
 		case 4:system("cls");
@@ -686,16 +748,38 @@ void Upgrade_Menu(Player& pl)
 
 
 int main()
-{
+{   
+
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
 	std::setlocale(LC_ALL, "ru");
-	Player pl(100, 3, "Кулаки");
-	Weapon Base;
-	Base.name_weapon = "Кулаки";
-	Base.uron = 3;
-	pl.weapons.push_back(Base);
-	Base_Menu(pl);
+	int vub=1;
 
+	if (Have_File())
+	{
+		
+		std::cout << "Начать новую игру или загрузить сохранение?" << '\n';
+		std::cout << "1.Начать новую игру" << '\n';
+		std::cout << "2.Загрузить сохранённую игру" << '\n';
+		std::cin >> vub;
+	}
+
+
+	Player pl(100, 3, "Кулаки");
+	
+	if (vub == 2)
+	{
+		pl.Load_game();
+
+		std::cout << "Игра успешно загружена" << std::endl;
+	}
+	else
+	{
+		Weapon Base;
+		Base.name_weapon = "Кулаки";
+		Base.uron = 3;
+		pl.weapons.push_back(Base);
+	}
+	Base_Menu(pl);
 
 }
