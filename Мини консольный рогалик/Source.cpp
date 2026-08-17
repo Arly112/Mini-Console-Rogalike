@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -38,7 +39,7 @@ public:
 		vubb = vub;
 		exp = 0;
 		lvl = 1;
-		new_lvl = 200;
+		new_lvl = 100;
 	}
 
 	void dam(int damm)
@@ -53,9 +54,10 @@ public:
 	void Heel(int hel)
 	{
 		hpp += hel;
-		if (hpp >= bas_hp)
+		if (hpp > bas_hp)
 		{
 			hpp = bas_hp;
+
 		}
 	}
 	void Level_Up(Player& pl)
@@ -103,11 +105,11 @@ public:
 	void Stat_oru()
 	{
 		std::string inv;
-		int ind;
+		int ind=-2;
 		std::cout << "Введите номер оружия чей урон хотите узнать?"<<std::endl;
 		std::cin>>ind;
 
-		if (ind<0 || ind>weapons.size())
+		if (ind<0 || ind>=weapons.size())
 		{
 			std::cout << "\nОружия под данным номером нет" << std::endl;
 			return;
@@ -122,7 +124,7 @@ public:
 		
 		std::setlocale(LC_ALL, "ru");
 		std::string inv;
-		int ind;
+		int ind=-2;
 		std::cout << "Введите номер оружия которое хотите взять?" << std::endl;
 		std::cin >> ind;
 
@@ -179,6 +181,60 @@ public:
 		} while (vab != 0);
 	}
 
+	void Save_game()
+	{
+		std::ofstream save;
+		save.open("Save.txt");
+		save << hpp << '\n'
+			 << lvl << '\n'
+			 << bas_hp << '\n'
+			 << uronn << '\n'
+			 << bas_ur << '\n'
+			 << exp << '\n'
+			 << new_lvl << '\n';
+
+
+		save << vubb << '\n';
+
+
+		save << weapons.size()<<'\n';
+		for (auto& w : weapons)
+		{
+			save << w.name_weapon << '\n'
+				<< w.stat << '\n'
+				<< w.uron<<'\n';
+		}
+		save.close();
+	}
+
+	bool Load_game()
+	{
+		std::ifstream load;
+		load.open("Save.txt");
+		if (!load) return false;
+
+
+		load >> hpp >> lvl >> bas_hp >> uronn >> bas_ur >> exp >> new_lvl;
+		load.ignore(1000, '\n');
+
+		std::getline(load, vubb);
+
+		size_t c;
+		load >> c;
+		load.ignore(1000, '\n');
+		for (size_t i = 0; i < c; i++)
+		{
+			Weapon oru;
+			std::getline(load, oru.name_weapon);
+			std::getline(load, oru.stat);
+			load >> oru.uron;
+			load.ignore(1000, '\n');
+			weapons.push_back(oru);
+		}
+		return true;
+		load.close();
+	}
+
 	int retUr()
 	{
 		return uronn;
@@ -211,6 +267,12 @@ public:
 	}
 
 };
+
+bool Have_File()
+{
+	std::ifstream hf("Save.txt");
+	return hf.is_open();
+}
 
 void Evil_Menu(Player& pl);
 void Mobs_menu(Player& pl);
@@ -389,7 +451,7 @@ void Prow_VubRun(Player& pl, std::string& mobl, int& Hp_mobs, int& Damage_mobs, 
 		Run(pl, mobl, Hp_mobs, Damage_mobs, escp);
 	}
 
-	if (vubRun > 60 && vubRun <= 100)
+	else if (vubRun > 60 && vubRun <= 100)
 	{
 		NoRun(pl, mobl, Hp_mobs, Damage_mobs, escp);
 	}
@@ -475,7 +537,7 @@ void Evil_Menu(Player& pl)
 		pl.dam(evur);
 	}
 
-	if (evil > 25 && evil <= 45)
+	else if (evil > 25 && evil <= 45)
 	{
 		std::cout << "Вы прошли дальше но наступили в медвежий капкан, вы пытаетесь осободиться" << std::endl;
 		std::cout << "Через некоторое время вам всё же удалось удалось это сделать но из - за кровотечения ";
@@ -484,7 +546,7 @@ void Evil_Menu(Player& pl)
 		pl.dam(evur);
 	}
 
-	if (evil > 45 && evil <= 50)
+	else if (evil > 45 && evil <= 50)
 	{
 		std::cout << "Вы зашли в хорошо осветлённую комнату, там на столе стояла бутылочка с красной жидкостью." << std::endl;
 		std::cout << "У вас разыгралась жажда и вы решили выпить эту жидкость." << std::endl;
@@ -494,7 +556,7 @@ void Evil_Menu(Player& pl)
 		pl.Heel(evur);
 	}
 
-	if (evil > 50 && evil <= 80&&pl.retHpp()>12)
+	else if (evil > 50 && evil <= 80&&pl.retHpp()>12)
 	{
 		std::cout << "Вы наступили на скрытую плиту в полу..." << std::endl;
 		std::cout << "Из стены вылетела стрела и попала вам в плечо и задела важный сосуд но вы успели остановить кровотечение!" << std::endl;
@@ -504,7 +566,7 @@ void Evil_Menu(Player& pl)
 		pl.dam(evur);
 	}
 
-	if (evil > 50 && evil <= 80&&pl.retHpp()<=12)
+	else if (evil > 50 && evil <= 80&&pl.retHpp()<=12)
 	{
 		std::cout << "Вы наступили на скрытую плиту в полу..." << std::endl;
 		std::cout << "Из стены вылетела стрела и попала вам в плечо и задела важный сосуд и вы истекли кровью!!" << std::endl;
@@ -512,7 +574,7 @@ void Evil_Menu(Player& pl)
 		pl.dam(evur);
 	}
 
-	if (evil > 80 && evil < 100)
+	else if (evil > 80 && evil < 100)
 	{
 		std::cout << "Вы задели рычаг на стене и из щелей в полу повалил зелёный дым..." << std::endl;
 		std::cout << "Ядовитый газ обжёг ваши лёгкие!" << std::endl;
@@ -521,7 +583,7 @@ void Evil_Menu(Player& pl)
 		pl.dam(evur);
 	}
 
-	if (evil==100)
+	else if (evil==100)
 	{
 		std::cout << "Вы не заметили яму под ногами и провалились вниз!" << std::endl;
 		std::cout << "Острые колья пронзили вас насквозь!" << std::endl;
@@ -560,11 +622,13 @@ void Base_Menu(Player& pl)
 				std::cout << "Вы проиграли";
 				return;
 			}
+			pl.Save_game();
 			std::cout << "\n";
 			break;
 		case 4:system("cls");
 			break;
 		case 0:std::cout << "\nХорошего вам дня!!";
+			pl.Save_game();
 			break;
 		}
 	} while (vab != 0);
@@ -685,16 +749,38 @@ void Upgrade_Menu(Player& pl)
 
 
 int main()
-{
+{   
+
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
 	std::setlocale(LC_ALL, "ru");
-	Player pl(20, 3, "Кулаки");
-	Weapon Base;
-	Base.name_weapon = "Кулаки";
-	Base.uron = 3;
-	pl.weapons.push_back(Base);
-	Base_Menu(pl);
+	int vub=1;
 
+	if (Have_File())
+	{
+		
+		std::cout << "Начать новую игру или загрузить сохранение?" << '\n';
+		std::cout << "1.Начать новую игру" << '\n';
+		std::cout << "2.Загрузить сохранённую игру" << '\n';
+		std::cin >> vub;
+	}
+
+
+	Player pl(100, 3, "Кулаки");
+	
+	if (vub == 2)
+	{
+		pl.Load_game();
+
+		std::cout << "Игра успешно загружена" << std::endl;
+	}
+	else
+	{
+		Weapon Base;
+		Base.name_weapon = "Кулаки";
+		Base.uron = 0;
+		pl.weapons.push_back(Base);
+	}
+	Base_Menu(pl);
 
 }
